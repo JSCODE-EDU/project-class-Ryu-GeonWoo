@@ -3,19 +3,14 @@ package com.jscode.ryugeonwoo.service;
 import com.jscode.ryugeonwoo.dto.BoardDto;
 import com.jscode.ryugeonwoo.entity.Board;
 import com.jscode.ryugeonwoo.repository.BoardRepository;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
-
 @Service
-@Slf4j
+@RequiredArgsConstructor
 public class BoardService {
-    @Autowired
-    private BoardRepository boardRepository;
+    private final BoardRepository boardRepository;
 
     // 모든 게시물 조회
     public List<Board> index() {

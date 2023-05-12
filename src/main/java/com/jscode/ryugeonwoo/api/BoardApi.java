@@ -3,22 +3,21 @@ package com.jscode.ryugeonwoo.api;
 import com.jscode.ryugeonwoo.dto.BoardDto;
 import com.jscode.ryugeonwoo.entity.Board;
 import com.jscode.ryugeonwoo.service.BoardService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Slf4j //로그 출력
-@RestController // Json 형식 변환
+@RestController
+@RequiredArgsConstructor
 public class BoardApi {
-    @Autowired
-    private BoardService boardService;
+
+    private final BoardService boardService;
 
     // 게시글 작성
-    @PostMapping("/api/board")
+    @PostMapping("/api/boards")
     public ResponseEntity<Board> create(@RequestBody BoardDto dto){
         Board created = boardService.create(dto);
         return (created != null) ?
