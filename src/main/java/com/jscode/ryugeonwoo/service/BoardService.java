@@ -5,6 +5,7 @@ import com.jscode.ryugeonwoo.entity.Board;
 import com.jscode.ryugeonwoo.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 @Service
@@ -12,11 +13,13 @@ import java.util.List;
 public class BoardService {
     private final BoardRepository boardRepository;
 
+    @Transactional(readOnly = true)
     // 모든 게시물 조회
-    public List<Board> index() {
-        return boardRepository.findAll();
+    public List<Board> findAll() {
+        return boardRepository.findTop100ByOrderByCreatedAt();
     }
 
+    @Transactional
     // 게시글 작성
     public Board create(BoardDto dto) {
         Board board = dto.toEntity();
@@ -25,12 +28,13 @@ public class BoardService {
         }
         return boardRepository.save(board);
     }
-
+    @Transactional(readOnly = true)
     // 특정 id 게시글 조회 및 반환
-    public Board show(Integer id) {
+    public Board findById(Integer id) {
         return boardRepository.findById(id).orElse(null);
     }
 
+    @Transactional
     // 특정 id 게시글 수정
     public Board update(Integer id, BoardDto dto) {
         // Entity 로 변경
@@ -50,6 +54,7 @@ public class BoardService {
         return updated;
     }
 
+    @Transactional
     // 특정 id 게시글 삭제
     public Board delete(Integer id) {
         // 대상 조회
@@ -62,5 +67,10 @@ public class BoardService {
 
         boardRepository.deleteById(id);
         return target;
+    }
+
+    @Transactional(readOnly = true)
+    public List<Board> findByKeyWord(String keyWord) {
+        return boardRepository.findTop100ByTitleContainingOrderByCreatedAt(keyWord);
     }
 }
