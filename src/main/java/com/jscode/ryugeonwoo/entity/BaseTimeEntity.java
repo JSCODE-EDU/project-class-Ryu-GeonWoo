@@ -1,5 +1,6 @@
 package com.jscode.ryugeonwoo.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public class BaseTimeEntity {
 
-
+    @Column(updatable = false)
     @CreatedDate
     private LocalDateTime createdAt; // 생성 timestamp
 }
