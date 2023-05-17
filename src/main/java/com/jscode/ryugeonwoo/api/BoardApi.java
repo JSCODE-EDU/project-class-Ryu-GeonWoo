@@ -62,10 +62,15 @@ public class BoardApi {
     }
 
     // 키워드 검색
-    //@RequestParam 으로 변경 ex) api/boards?searchType=keyWord=ddd
-    @GetMapping("/api/boards/search/{keyWord}")
-    public List<Board> findBoardByKeyWord(@PathVariable String keyWord){
-        return boardService.findByKeyWord(keyWord);
+    @GetMapping("/api/boards/search")
+    public ResponseEntity<?> findBoardByKeyWord(@PathVariable String keyWord){
+        // 검색어 유효성 검사
+        if (keyWord == null || keyWord.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("검색어를 입력하세요.");
+        }
+
+        List<Board> searched = boardService.findByKeyWord(keyWord);
+        return ResponseEntity.ok(searched);
     }
 
 }
