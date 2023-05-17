@@ -3,26 +3,31 @@ package com.jscode.ryugeonwoo.api;
 import com.jscode.ryugeonwoo.dto.BoardDto;
 import com.jscode.ryugeonwoo.entity.Board;
 import com.jscode.ryugeonwoo.service.BoardService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
+@ResponseBody
 public class BoardApi {
 
     private final BoardService boardService;
 
     // 게시글 작성
     @PostMapping("/api/boards")
-    public ResponseEntity<Board> createBoard(@RequestBody BoardDto dto){
+    public ResponseEntity<Board> createBoard(@Valid @RequestBody BoardDto dto){
         Board created = boardService.create(dto);
-        return (created != null) ?
-                ResponseEntity.status(HttpStatus.OK).body(created) :
-                ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        return ResponseEntity.ok(created);
     }
 
     // 게시글 전체 조회
@@ -53,13 +58,11 @@ public class BoardApi {
     @DeleteMapping("/api/boards/{id}")
     public ResponseEntity<Board> deleteBoard(@PathVariable Integer id){
         Board deleted = boardService.delete(id);
-
-        return (deleted != null) ?
-                ResponseEntity.status(HttpStatus.OK).body(deleted) :
-                ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        return ResponseEntity.ok(deleted);
     }
 
     // 키워드 검색
+    //@RequestParam 으로 변경 ex) api/boards?searchType=keyWord=ddd
     @GetMapping("/api/boards/search/{keyWord}")
     public List<Board> findBoardByKeyWord(@PathVariable String keyWord){
         return boardService.findByKeyWord(keyWord);

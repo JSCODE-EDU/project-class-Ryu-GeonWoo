@@ -23,15 +23,13 @@ public class BoardService {
     // 게시글 작성
     public Board create(BoardDto dto) {
         Board board = dto.toEntity();
-        if(board.getId() != null){
-            return null;
-        }
         return boardRepository.save(board);
     }
-    @Transactional(readOnly = true)
+
     // 특정 id 게시글 조회 및 반환
+    @Transactional(readOnly = true)
     public Board findById(Integer id) {
-        return boardRepository.findById(id).orElse(null);
+        return boardRepository.findById(id).orElseThrow();
     }
 
     @Transactional
@@ -41,7 +39,7 @@ public class BoardService {
         Board board = dto.toEntity();
 
         // 타겟 조회
-        Board target = boardRepository.findById(id).orElse(null);
+        Board target = boardRepository.findById(id).orElseThrow();
 
         // 해당 게시물이 존재하지 않거나, 변경하고자 하는 게시글이 다를 경우
         if(target == null || id != board.getId()){
@@ -58,13 +56,7 @@ public class BoardService {
     // 특정 id 게시글 삭제
     public Board delete(Integer id) {
         // 대상 조회
-        Board target = boardRepository.findById(id).orElse(null);
-
-        // 존재하지 않을 경우
-        if(target == null){
-            return null;
-        }
-
+        Board target = boardRepository.findById(id).orElseThrow();
         boardRepository.deleteById(id);
         return target;
     }
