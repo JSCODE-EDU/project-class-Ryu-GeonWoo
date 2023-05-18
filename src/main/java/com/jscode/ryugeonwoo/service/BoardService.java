@@ -62,7 +62,7 @@ public class BoardService {
     }
 
     @Transactional(readOnly = true)
-    public List<Board> findByKeyWord(String keyWord) {
+    public List<Board> findTitleByKeyWord(String keyWord) {
         return boardRepository.findTop100ByTitleContainingOrderByCreatedAt(keyWord);
     }
 }

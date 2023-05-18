@@ -7,14 +7,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -62,14 +57,14 @@ public class BoardApi {
     }
 
     // 키워드 검색
-    @GetMapping("/api/boards/search")
+    @GetMapping("/api/boards/search/title/{keyWord}")
     public ResponseEntity<?> findBoardByKeyWord(@PathVariable String keyWord){
         // 검색어 유효성 검사
         if (keyWord == null || keyWord.trim().isEmpty()) {
             return ResponseEntity.badRequest().body("검색어를 입력하세요.");
         }
 
-        List<Board> searched = boardService.findByKeyWord(keyWord);
+        List<Board> searched = boardService.findTitleByKeyWord(keyWord);
         return ResponseEntity.ok(searched);
     }
 
