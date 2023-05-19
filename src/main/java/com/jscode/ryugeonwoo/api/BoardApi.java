@@ -3,6 +3,7 @@ package com.jscode.ryugeonwoo.api;
 import com.jscode.ryugeonwoo.dto.BoardDto;
 import com.jscode.ryugeonwoo.entity.Board;
 import com.jscode.ryugeonwoo.service.BoardService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,17 +13,16 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@ResponseBody
 public class BoardApi {
 
     private final BoardService boardService;
 
     // 게시글 작성
     @PostMapping("/api/boards")
-    public ResponseEntity<Board> createBoard(@RequestBody BoardDto dto){
+    public ResponseEntity<Board> createBoard(@Valid @RequestBody BoardDto dto){
         Board created = boardService.create(dto);
-        return (created != null) ?
-                ResponseEntity.status(HttpStatus.OK).body(created) :
-                ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        return ResponseEntity.ok(created);
     }
 
     // 게시글 전체 조회
@@ -53,16 +53,19 @@ public class BoardApi {
     @DeleteMapping("/api/boards/{id}")
     public ResponseEntity<Board> deleteBoard(@PathVariable Integer id){
         Board deleted = boardService.delete(id);
-
-        return (deleted != null) ?
-                ResponseEntity.status(HttpStatus.OK).body(deleted) :
-                ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        return ResponseEntity.ok(deleted);
     }
 
     // 키워드 검색
-    @GetMapping("/api/boards/search/{keyWord}")
-    public List<Board> findBoardByKeyWord(@PathVariable String keyWord){
-        return boardService.findByKeyWord(keyWord);
+    @GetMapping("/api/boards/search/title/{keyWord}")
+    public ResponseEntity<?> findBoardByKeyWord(@PathVariable String keyWord){
+        // 검색어 유효성 검사
+        if (keyWord == null || keyWord.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("검색어를 입력하세요.");
+        }
+
+        List<Board> searched = boardService.findTitleByKeyWord(keyWord);
+        return ResponseEntity.ok(searched);
     }
 
 }
