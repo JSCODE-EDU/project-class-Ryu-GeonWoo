@@ -26,7 +26,7 @@ public class BoardAdvice {
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.toList());
 
-        ErrorResponse errorResponse = new ErrorResponse("Validation 오류", errors);
+        ErrorResponse errorResponse = new ErrorResponse("형식 오류", errors);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(errorResponse);
@@ -41,4 +41,11 @@ public class BoardAdvice {
                 .body(errorResponse);
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
+        ErrorResponse errorResponse = new ErrorResponse("Search KeyWord error", Collections.singletonList("공백을 제외한 한글자 이상의 단어를 검색해주세요."));
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(errorResponse);
+    }
 }
