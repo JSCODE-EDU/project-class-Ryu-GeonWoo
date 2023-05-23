@@ -3,17 +3,17 @@ package com.jscode.ryugeonwoo.api;
 import com.jscode.ryugeonwoo.dto.BoardDto;
 import com.jscode.ryugeonwoo.entity.Board;
 import com.jscode.ryugeonwoo.service.BoardService;
+import io.micrometer.common.util.StringUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequiredArgsConstructor
-@ResponseBody
 public class BoardApi {
 
     private final BoardService boardService;
@@ -39,14 +39,12 @@ public class BoardApi {
 
     // 특정 게시글 수정
     @PatchMapping("/api/boards/{id}")
-    public ResponseEntity<Board> updateBoard(@PathVariable Integer id,
-                                             @RequestBody BoardDto dto){
+    public ResponseEntity<?> updateBoard(@PathVariable Integer id,
+                                             @Valid @RequestBody BoardDto dto){
 
         Board updated = boardService.update(id, dto);
 
-        return (updated != null) ?
-                ResponseEntity.status(HttpStatus.OK).body(updated) :
-                ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        return ResponseEntity.ok(updated);
     }
 
     // 특정 게시글 삭제
@@ -57,14 +55,15 @@ public class BoardApi {
     }
 
     // 키워드 검색
-    @GetMapping("/api/boards/search/title/{keyWord}")
-    public ResponseEntity<?> findBoardByKeyWord(@PathVariable String keyWord){
-        // 검색어 유효성 검사
-        if (keyWord == null || keyWord.trim().isEmpty()) {
-            return ResponseEntity.badRequest().body("검색어를 입력하세요.");
+    @GetMapping("/api/boards/search/title")
+    public ResponseEntity<?> findBoardByKeyWord(@RequestParam String keyWord) {
+        if (StringUtils.isBlank(keyWord)) {
+            throw new IllegalArgumentException();
         }
-
         List<Board> searched = boardService.findTitleByKeyWord(keyWord);
+        if(searched.size() == 0){
+            throw new NoSuchElementException();
+        }
         return ResponseEntity.ok(searched);
     }
 

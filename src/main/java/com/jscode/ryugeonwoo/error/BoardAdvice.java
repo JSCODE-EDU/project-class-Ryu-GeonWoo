@@ -3,10 +3,9 @@ package com.jscode.ryugeonwoo.error;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 
 import java.util.Collections;
@@ -14,8 +13,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
-@RestController
-@ControllerAdvice
+@RestControllerAdvice
 public class BoardAdvice {
     //MethodArgumentNotValidException 예외 처리
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -26,7 +24,7 @@ public class BoardAdvice {
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.toList());
 
-        ErrorResponse errorResponse = new ErrorResponse("Validation 오류", errors);
+        ErrorResponse errorResponse = new ErrorResponse("형식 오류", errors);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(errorResponse);
@@ -41,4 +39,11 @@ public class BoardAdvice {
                 .body(errorResponse);
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
+        ErrorResponse errorResponse = new ErrorResponse("Search KeyWord error", Collections.singletonList("공백을 제외한 한글자 이상의 단어를 검색해주세요."));
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(errorResponse);
+    }
 }
