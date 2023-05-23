@@ -4,11 +4,13 @@ import com.jscode.ryugeonwoo.entity.Board;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 
-@ToString
-@AllArgsConstructor
+@Builder
+@Getter
 public class BoardDto {
     private Integer id;
 
@@ -22,6 +24,14 @@ public class BoardDto {
 
 
     public Board toEntity() {
-        return new Board(id, title, body);
+        return new Board(this.id, this.title, this.body);
+    }
+
+    public static BoardDto toDto(Board board) {
+        return BoardDto.builder()
+                .id(board.getId())
+                .title(board.getTitle())
+                .body(board.getBody())
+                .build();
     }
 }

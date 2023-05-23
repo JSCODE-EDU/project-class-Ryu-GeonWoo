@@ -18,26 +18,28 @@ public class BoardService {
 
     // 모든 게시물 조회
     @Transactional(readOnly = true)
-    public List<Board> findAll() {
-        return boardRepository.findTop100ByOrderByCreatedAt();
+    public List<BoardDto> findAll() {
+        List<Board> searched = boardRepository.findTop100ByOrderByCreatedAt();
+        return searched.stream().map(BoardDto::toDto).toList();
     }
 
     // 게시글 작성
     @Transactional
-    public Board create(BoardDto dto) {
+    public BoardDto create(BoardDto dto) {
         Board board = dto.toEntity();
-        return boardRepository.save(board);
+        return BoardDto.toDto(boardRepository.save(board));
     }
 
     // 특정 id 게시글 조회 및 반환
     @Transactional(readOnly = true)
-    public Board findById(Integer id) {
-        return boardRepository.findById(id).orElseThrow();
+    public BoardDto findById(Integer id) {
+        Board searched = boardRepository.findById(id).orElseThrow();
+        return BoardDto.toDto(searched);
     }
 
     // 특정 id 게시글 수정
     @Transactional
-    public Board update(Integer id, BoardDto dto) {
+    public BoardDto update(Integer id, BoardDto dto) {
         // Entity 로 변경
         Board board = dto.toEntity();
 
@@ -46,22 +48,24 @@ public class BoardService {
 
         // 수정 및 저장
         target.patch(board);
-        Board updated = boardRepository.save(target);
+        BoardDto updated = BoardDto.toDto(target);
         return updated;
     }
 
     // 특정 id 게시글 삭제
     @Transactional
-    public Board delete(Integer id) {
+    public BoardDto delete(Integer id) {
         // 대상 조회
         Board target = boardRepository.findById(id).orElseThrow();
         boardRepository.deleteById(id);
-        return target;
+        return BoardDto.toDto(target);
     }
 
     // 제목에 keyWord가 들어간 게시물 검색
     @Transactional(readOnly = true)
-    public List<Board> findTitleByKeyWord(String keyWord) {
-        return boardRepository.findTop100ByTitleContainingOrderByCreatedAt(keyWord);
+    public List<BoardDto> findTitleByKeyWord(String keyWord) {
+        List<Board> updated = boardRepository.findTop100ByTitleContainingOrderByCreatedAt(keyWord);
+        return updated.stream().map(BoardDto::toDto).toList();
+
     }
 }
