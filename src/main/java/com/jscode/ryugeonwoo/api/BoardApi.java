@@ -20,20 +20,20 @@ public class BoardApi {
 
     // 게시글 작성
     @PostMapping("/api/boards")
-    public ResponseEntity<Board> createBoard(@Valid @RequestBody BoardDto dto){
-        Board created = boardService.create(dto);
+    public ResponseEntity<?> createBoard(@Valid @RequestBody BoardDto dto){
+        BoardDto created = boardService.create(dto);
         return ResponseEntity.ok(created);
     }
 
     // 게시글 전체 조회
     @GetMapping("/api/boards")
-    public List<Board> findAllBoard(){
+    public List<?> findAllBoard(){
         return boardService.findAll();
     }
 
     // 특정 id의 게시글 조회
     @GetMapping("/api/boards/{id}")
-    public Board findBoardById(@PathVariable Integer id){
+    public BoardDto findBoardById(@PathVariable Integer id){
         return boardService.findById(id);
     }
 
@@ -42,15 +42,15 @@ public class BoardApi {
     public ResponseEntity<?> updateBoard(@PathVariable Integer id,
                                              @Valid @RequestBody BoardDto dto){
 
-        Board updated = boardService.update(id, dto);
+        BoardDto updated = boardService.update(id, dto);
 
         return ResponseEntity.ok(updated);
     }
 
     // 특정 게시글 삭제
     @DeleteMapping("/api/boards/{id}")
-    public ResponseEntity<Board> deleteBoard(@PathVariable Integer id){
-        Board deleted = boardService.delete(id);
+    public ResponseEntity<?> deleteBoard(@PathVariable Integer id){
+        BoardDto deleted = boardService.delete(id);
         return ResponseEntity.ok(deleted);
     }
 
@@ -60,7 +60,7 @@ public class BoardApi {
         if (StringUtils.isBlank(keyWord)) {
             throw new IllegalArgumentException();
         }
-        List<Board> searched = boardService.findTitleByKeyWord(keyWord);
+        List<BoardDto> searched = boardService.findTitleByKeyWord(keyWord);
         if(searched.size() == 0){
             throw new NoSuchElementException();
         }
