@@ -33,13 +33,13 @@ public class BoardApi {
 
     // 특정 id의 게시글 조회
     @GetMapping("/api/boards/{id}")
-    public BoardDto findBoardById(@PathVariable Integer id){
+    public BoardDto findBoardById(@PathVariable Long id){
         return boardService.findById(id);
     }
 
     // 특정 게시글 수정
     @PatchMapping("/api/boards/{id}")
-    public ResponseEntity<?> updateBoard(@PathVariable Integer id,
+    public ResponseEntity<?> updateBoard(@PathVariable Long id,
                                              @Valid @RequestBody BoardDto dto){
 
         BoardDto updated = boardService.update(id, dto);
@@ -49,7 +49,7 @@ public class BoardApi {
 
     // 특정 게시글 삭제
     @DeleteMapping("/api/boards/{id}")
-    public ResponseEntity<?> deleteBoard(@PathVariable Integer id){
+    public ResponseEntity<?> deleteBoard(@PathVariable Long id){
         BoardDto deleted = boardService.delete(id);
         return ResponseEntity.ok(deleted);
     }

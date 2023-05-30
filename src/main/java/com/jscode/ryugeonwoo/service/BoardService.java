@@ -32,14 +32,14 @@ public class BoardService {
 
     // 특정 id 게시글 조회 및 반환
     @Transactional(readOnly = true)
-    public BoardDto findById(Integer id) {
+    public BoardDto findById(Long id) {
         Board searched = boardRepository.findById(id).orElseThrow();
         return BoardDto.toDto(searched);
     }
 
     // 특정 id 게시글 수정
     @Transactional
-    public BoardDto update(Integer id, BoardDto dto) {
+    public BoardDto update(Long id, BoardDto dto) {
         // Entity 로 변경
         Board board = dto.toEntity();
 
@@ -54,7 +54,7 @@ public class BoardService {
 
     // 특정 id 게시글 삭제
     @Transactional
-    public BoardDto delete(Integer id) {
+    public BoardDto delete(Long id) {
         // 대상 조회
         Board target = boardRepository.findById(id).orElseThrow();
         boardRepository.deleteById(id);

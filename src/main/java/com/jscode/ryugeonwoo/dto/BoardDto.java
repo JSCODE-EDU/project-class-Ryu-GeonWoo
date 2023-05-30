@@ -12,7 +12,7 @@ import org.hibernate.validator.constraints.Length;
 @Builder
 @Getter
 public class BoardDto {
-    private Integer id;
+    private Long id;
 
     @NotBlank(message = "제목을 입력해 주세요.")
     @Length(min = 1, max = 15, message = "제목을 1과 15 사이의 글자수를 적어주세요")
